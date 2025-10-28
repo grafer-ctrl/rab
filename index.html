@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RAB Rumahku - Kalkulator Anggaran Bangun Rumah</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <script>(function(s){s.dataset.zone='10106861',s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -286,6 +288,17 @@
             }
         });
     </script>
+    <script>
+  const tg = window.Telegram.WebApp;
+  tg.expand(); // Membuka layar penuh
+  tg.ready();  // Menandakan app siap
+
+  // Opsional: Tambahkan tombol utama Telegram jika ingin aksi khusus
+  // tg.MainButton.text = "Hitung RAB";
+  // tg.MainButton.show();
+</script>
+
 </body>
 
 </html>
+
