@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAB Rumahku - Kalkulator Anggaran Bangun Rumah</title>
+<script>
+    // Menunggu 2 menit (120.000 milidetik) sebelum menampilkan iklan
+    setTimeout(function() {
+      (function(s){
+        s.dataset.zone='10106861';
+        s.src='https://groleegni.net/vignette.min.js';
+      })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+    }, 120000); // 2 menit
+  </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom style untuk print */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #hasil-rab, #hasil-rab * {
+                visibility: visible;
+            }
+            #hasil-rab {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">RAB Rumahku</h1>
+            <p class="text-gray-600 mt-2">Kalkulator Cepat untuk Estimasi Biaya Membangun Rumah Impian Anda</p>
+        </header>
+
+        <main>
+            <!-- Section Form Input -->
+            <section id="form-section" class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Mulai Perhitungan</h2>
+                <form id="rab-form" class="space-y-6">
+                    <!-- Input Tipe Rumah -->
+                    <div>
+                        <label for="tipe-rumah" class="block text-sm font-medium text-gray-700 mb-2">Tipe Rumah (Luas Bangunan)</label>
+                        <select id="tipe-rumah" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>-- Pilih Tipe Rumah --</option>
+                            <option value="36">Type 36 (36 m²)</option>
+                            <option value="45">Type 45 (45 m²)</option>
+                            <option value="54">Type 54 (54 m²)</option>
+                            <option value="70">Type 70 (70 m²)</option>
+                            <option value="90">Type 90 (90 m²)</option>
+                            <option value="120">Type 120 (120 m²)</option>
+                            <option value="custom">Custom (Input Manual)</option>
+                        </select>
+                    </div>
+
+                    <!-- Input Luas Custom (Tersembunyi awalnya) -->
+                    <div id="luas-custom-wrapper" class="hidden">
+                        <label for="luas-custom" class="block text-sm font-medium text-gray-700 mb-2">Masukkan Luas Bangunan (m²)</label>
+                        <input type="number" id="luas-custom" min="1" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Input Kualitas -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Kualitas Bangunan</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                <input type="radio" name="kualitas" value="standar" required class="mr-3">
+                                <div>
+                                    <span class="font-medium">Standar</span>
+                                    <p class="text-xs text-gray-500">Material standar, fungsional</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                <input type="radio" name="kualitas" value="menengah" required class="mr-3">
+                                <div>
+                                    <span class="font-medium">Menengah</span>
+                                    <p class="text-xs text-gray-500">Material lebih baik, desain menarik</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                <input type="radio" name="kualitas" value="mewah" required class="mr-3">
+                                <div>
+                                    <span class="font-medium">Mewah</span>
+                                    <p class="text-xs text-gray-500">Material premium, desain eksklusif</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Input Lokasi -->
+                    <div>
+                        <label for="lokasi" class="block text-sm font-medium text-gray-700 mb-2">Lokasi Pembangunan</label>
+                        <select id="lokasi" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>-- Pilih Lokasi --</option>
+                            <option value="jabodetabek">Jabodetabek</option>
+                            <option value="bandung">Bandung & Sekitarnya</option>
+                            <option value="surabaya">Surabaya & Sekitarnya</option>
+                            <option value="kota-lain">Kota Lainnya</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Hitung RAB Sekarang
+                    </button>
+                </form>
+            </section>
+
+            <!-- Section Hasil RAB (Tersembunyi awalnya) -->
+            <section id="hasil-rab" class="hidden bg-white p-6 md:p-8 rounded-lg shadow-lg mt-8">
+                <div class="flex justify-between items-center mb-6 no-print">
+                    <h2 class="text-2xl font-semibold text-gray-700">Hasil Perhitungan RAB</h2>
+                    <button id="btn-cetak" class="bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">
+                        Cetak Laporan
+                    </button>
+                </div>
+
+                <!-- Ringkasan Total -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg mb-6">
+                    <p class="text-lg">Estimasi Total Biaya Pembangunan</p>
+                    <p id="total-biaya" class="text-4xl font-bold mt-2">Rp 0</p>
+                </div>
+
+                <!-- Tabel Breakdown -->
+                <h3 class="text-xl font-semibold mb-4 text-gray-700">Rincian Anggaran (Estimasi)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-gray-600">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Item Pekerjaan</th>
+                                <th scope="col" class="px-6 py-3 text-right">Persentase</th>
+                                <th scope="col" class="px-6 py-3 text-right">Estimasi Biaya</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-breakdown">
+                            <!-- Isi akan di-generate oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-8 text-center no-print">
+                    <button id="btn-hitung-ulang" class="bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-700 transition">
+                        Hitung Ulang
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2024 RAB Rumahku. Ini adalah alat bantu estimasi. Biaya aktual dapat bervariasi.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('rab-form');
+            const formSection = document.getElementById('form-section');
+            const hasilSection = document.getElementById('hasil-rab');
+            const tipeRumahSelect = document.getElementById('tipe-rumah');
+            const luasCustomWrapper = document.getElementById('luas-custom-wrapper');
+            const btnCetak = document.getElementById('btn-cetak');
+            const btnHitungUlang = document.getElementById('btn-hitung-ulang');
+
+            // --- DATA DASAR (HANYA CONTOH) ---
+            // Harga per m² (belum termasuk faktor lokasi)
+            const HARGA_DASAR_PER_M2 = {
+                standar: 4_500_000, // Rp 4.5 juta
+                menengah: 6_500_000, // Rp 6.5 juta
+                mewah: 9_000_000    // Rp 9 juta
+            };
+
+            // Faktor penyesuaian harga berdasarkan lokasi
+            const FAKTOR_LOKASI = {
+                jabodetabek: 1.25,
+                bandung: 1.10,
+                surabaya: 1.15,
+                'kota-lain': 1.00
+            };
+
+            // Breakdown persentase biaya (ini adalah standar umum)
+            const BREAKDOWN_PEKERJAAN = [
+                { item: 'Pondasi & Struktur Beton', persen: 20 },
+                { item: 'Dinding & Partisi', persen: 15 },
+                { item: 'Kusen, Pintu & Jendela', persen: 10 },
+                { item: 'Atap & Plafon', persen: 15 },
+                { item: 'Lantai & Keramik', persen: 10 },
+                { item: 'Pekerjaan Sanitair & Plumbing', persen: 7 },
+                { item: 'Pekerjaan Listrik', persen: 5 },
+                { item: 'Pekerjaan Finishing (Cat, dll)', persen: 8 },
+                { item: 'Pekerjaan Lain & Pekerjaan Luar', persen: 5 },
+                { item: 'Biaya Tidak Terduga (Contingency)', persen: 5 }
+            ];
+
+            // --- EVENT LISTENERS ---
+            tipeRumahSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    luasCustomWrapper.classList.remove('hidden');
+                } else {
+                    luasCustomWrapper.classList.add('hidden');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                hitungRAB();
+            });
+
+            btnHitungUlang.addEventListener('click', function() {
+                formSection.classList.remove('hidden');
+                hasilSection.classList.add('hidden');
+                form.reset();
+                luasCustomWrapper.classList.add('hidden');
+            });
+
+            btnCetak.addEventListener('click', function() {
+                window.print();
+            });
+
+            // --- LOGIKA UTAMA ---
+            function hitungRAB() {
+                // 1. Ambil nilai dari form
+                const tipeRumah = tipeRumahSelect.value;
+                let luasBangunan = 0;
+
+                if (tipeRumah === 'custom') {
+                    luasBangunan = parseFloat(document.getElementById('luas-custom').value);
+                } else {
+                    luasBangunan = parseFloat(tipeRumah);
+                }
+
+                const kualitas = document.querySelector('input[name="kualitas"]:checked').value;
+                const lokasi = document.getElementById('lokasi').value;
+
+                // Validasi input
+                if (!luasBangunan || luasBangunan <= 0) {
+                    alert('Mohon masukkan luas bangunan yang valid.');
+                    return;
+                }
+
+                // 2. Lakukan perhitungan
+                const hargaDasar = HARGA_DASAR_PER_M2[kualitas];
+                const faktorLokasi = FAKTOR_LOKASI[lokasi];
+                
+                const totalBiaya = luasBangunan * hargaDasar * faktorLokasi;
+
+                // 3. Tampilkan hasil
+                tampilkanHasil(totalBiaya);
+            }
+
+            function tampilkanHasil(totalBiaya) {
+                // Format mata uang
+                const formatRupiah = (angka) => {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(angka);
+                };
+
+                // Update total biaya
+                document.getElementById('total-biaya').textContent = formatRupiah(totalBiaya);
+
+                // Generate tabel breakdown
+                const tabelBody = document.getElementById('tabel-breakdown');
+                tabelBody.innerHTML = ''; // Kosongkan tabel dulu
+
+                BREAKDOWN_PEKERJAAN.forEach(pekerjaan => {
+                    const biayaItem = totalBiaya * (pekerjaan.persen / 100);
+                    const row = `
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                ${pekerjaan.item}
+                            </td>
+                            <td class="px-6 py-4 text-right">${pekerjaan.persen}%</td>
+                            <td class="px-6 py-4 text-right font-semibold">${formatRupiah(biayaItem)}</td>
+                        </tr>
+                    `;
+                    tabelBody.innerHTML += row;
+                });
+
+                // Tampilkan section hasil, sembunyikan form
+                formSection.classList.add('hidden');
+                hasilSection.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
